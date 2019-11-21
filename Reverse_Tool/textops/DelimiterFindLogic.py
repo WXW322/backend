@@ -6,6 +6,8 @@ from common.readdata import *
 from common.Converter.base_convert import Converter
 from sklearn.feature_extraction.text import TfidfTransformer
 from common.analyzer.analyzer_common import base_analyzer
+from common.DataTuning.RawDataTuning.HttpDataTuning import HttpDataTuning
+import sys
 
 analyzer = base_analyzer()
 def get_ngram_words(text, nrange = (1, 1), topk = 1):
@@ -93,17 +95,24 @@ def filterWords(words):
         i = i + 1
     return words[-1][0]
 
+
 def rank_word(word_cnt, text):
     words_score = []
+    Tcnt = sum([word_cnt[word] for word in word_cnt])
     for word in word_cnt:
         start = text.find(word)
         end = text.rfind(word)
-        words_score.append((word, get_dis_score(start, end, word_cnt[word])))
+        words_score.append((word, get_dis_score(start, end, Tcnt)))
+        #words_score.append((word, get_dis_score(start, end, word_cnt[word])))
     words_score = sorted(words_score, key = lambda x: x[1], reverse=True)
     words_result = []
+    tLo = -1
     for word in words_score:
         if is_unseen_words(word[0]):
             words_result.append(word)
+            tLo = 0
+    if tLo == -1:
+        words_result.extend([word for word in words_score])
     return words_result
 
 def getDelimiter(datas):
@@ -113,12 +122,21 @@ def getDelimiter(datas):
     for message in messages:
         t_results.extend(get_ngram_words([message], (1, 2), 10))
     words = analyzer.get_topk(t_results)[0:10]
+    print(words)
     deliWords = filterWords(words)
     wordsList = [chr(int(word)) for word in deliWords.split(' ')]
     deliW = ''.join(wordsList)
-    return deliW
+    return deliW, deliWords
 
 if __name__ == '__main__':
+    """
     datas = read_datas('/home/wxw/data/httpDatas/http_test', 'single')
+    print(len(datas))
     datas = get_puredatas(datas)
-    print(getDelimiter(datas)[0])
+    """
+    httpDatatuning = HttpDataTuning()
+    src, des = httpDatatuning.tuningHttpByregix()
+    datas= []
+    datas.extend(src)
+    datas.extend(des)
+    print(getDelimiter(datas))

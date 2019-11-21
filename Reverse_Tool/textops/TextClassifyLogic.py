@@ -54,7 +54,7 @@ class TextClassifyLogic:
         for freWord in freWords:
             nums = self.RankWord(freWord, datas)
             words.append((freWord, nums[0], nums[1]))
-        BaseRankModel.sortList(words)
+        words = BaseRankModel.sortList(words)
         return words
 
     def ConvertFreWords(self, data):
@@ -94,13 +94,11 @@ class TextClassifyLogic:
             clsOne, clsTwo = self.ClassifyByCodes(funCode[0], messages)
             print(len(clsOne), len(clsTwo))
             if len(clsTwo) / len(self.messages) > self.tRate:
-                print('bbb')
                 fResult.append(self.ClassifyCircleLy(preWords, clsTwo))
             else:
                 if len(clsTwo) > 0:
                     fResult.append(clsTwo)
             if len(clsOne) / len(self.messages) > self.tRate:
-                print('aaa')
                 preWords.add(funCode)
                 fResult.append(self.ClassifyCircleLy(preWords, clsOne))
                 preWords.remove(funCode)
@@ -140,7 +138,8 @@ class TextClassifyLogic:
 
     def FormatInferCirclely(self, messages):
         preFre = set()
-        result = textClassify.classifyMessages(preFre, messages)
+        #result = textClassify.classifyMessages(preFre, messages)
+        result = self.classifyMessages(preFre, messages)
         finalFormats = []
         formatInfer = Format()
         for dataList in result:
@@ -170,12 +169,13 @@ if __name__ == '__main__':
     beginTime = time.time()
     messages = read_datas('/home/wxw/data/httpDatas/http_measure', 'single')
     messages = get_puredatas(messages)
+    print(len(messages))
     message_parser = TextParseLogic()
     messages = message_parser.ConvertDataToMessage(messages, b'\r\n')
-    textClassify = TextClassifyLogic(messages, 0.2, 0.3, 0.4, 3)
+    textClassify = TextClassifyLogic(messages, 0.1, 0.1, 0.2, 3)
     fFormats = textClassify.FormatInferCirclely(messages)
     for f in fFormats:
-        print(f._str_debug())
+        print(f.getLeafFields)
     #textClassify.GetFrequentWords(0.3, 3)
     #print(textClassify.GetWodsRank(messages))
     #msgSet = textClassify.FormatInfer(0.3, 3)

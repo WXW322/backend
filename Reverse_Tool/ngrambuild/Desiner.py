@@ -1,4 +1,4 @@
-
+import sys
 
 class Desiner:
     def __init__(self):
@@ -10,6 +10,22 @@ class Desiner:
         T = veParas['T']
         r = veParas['r']
         return self.VoteSingleM(messageLos, diffMeasure, vWay, T, r)
+
+    def VoteMultyByDicParas(self, veParas, messageLos):
+        diffMeasure = veParas['diff_measure']
+        vWay = veParas['vWay']
+        T = veParas['T']
+        r = veParas['r']
+        return self.addHead([self.VoteSingleM(messageLo, diffMeasure, vWay, T, r) for messageLo in messageLos])
+
+    def addHead(self, boundaries):
+        multyBorders = []
+        for boudary in boundaries:
+            boudary.insert(0 , 0)
+            sorted(boudary)
+            print(boudary)
+            multyBorders.append(boudary)
+        return multyBorders
 
 
 

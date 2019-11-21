@@ -101,6 +101,26 @@ class Converter:
             i = i + 1
         return fResult
 
+    def ConvertRawToSimDic(self, text, nrange = (1, 1), stopWords = [' ']):
+        """
+        function : get frequent of each words
+        messages: str multiple sentences
+        t_dics: dict words and its frequent
+        """
+        word_cnt = CountVectorizer(ngram_range=nrange, stop_words=stopWords)
+        word_result = word_cnt.fit_transform(text)
+        word_num = {}
+        words = word_cnt.get_feature_names()
+        length = len(words)
+        word_array = word_result.toarray()
+        for j in range(length):
+            for i in range(len(word_array)):
+                if i == 0:
+                    word_num[words[j]] = word_array[i][j]
+                else:
+                    word_num[words[j]] = word_num[words[j]] + word_array[i][j]
+        return word_num
+
     def convert_text_to_raw(self, phrase):
         pass
 

@@ -13,12 +13,12 @@ def convertTreeToList(tree):
 
 if __name__ == '__main__':
     t_temp = []
-    t_temp.append(primeData('11122',[0, 1, 3, 5, 7]))
-    t_temp.append(primeData('11222',[0, 1, 3, 5, 9]))
-    t_temp.append(primeData('112234',[0, 1, 3, 5, 10]))
-    t_temp.append(primeData('123423',[0, 2, 4, 6, 7]))
-    t_temp.append(primeData('1121',[0, 2, 4, 6, 8]))
-    t_temp.append(primeData('123123',[0, 2, 4, 6, 10]))
+    t_temp.append(primeData('11122',[0, 1, 3, 5, 7], 1))
+    t_temp.append(primeData('11222',[0, 1, 3, 5, 9], 2))
+    t_temp.append(primeData('112234',[0, 1, 3, 5, 10], 3))
+    t_temp.append(primeData('123423',[0, 2, 4, 6, 7], 4))
+    t_temp.append(primeData('1121',[0, 2, 4, 6, 8], 5))
+    t_temp.append(primeData('123123',[0, 2, 4, 6, 10], 6))
     tree_builder = treeFormat(t_temp, 3, 0.2)
     t_result = tree_builder.generate_T()
     t_result.depth_traverse()
@@ -26,3 +26,4 @@ if __name__ == '__main__':
         print("format start")
         for node_i in f:
             print(node_i.loc)
+            print(node_i.getNodeData())

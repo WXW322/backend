@@ -70,5 +70,33 @@ class MessageConvert(Converter):
             t_writer.flush()
             t_writer.close()
 
+    @staticmethod
+    def filterMsgs(valids, messages, lRange=0):
+        validMsgs = []
+        for message in messages:
+            for validItem in valids:
+                if str(message[0:lRange]).find(validItem) != -1:
+                    validMsgs.append(message)
+        return validMsgs
+
+    @staticmethod
+    def clsMessagesByRegix(regixS, wLen, messages):
+        splitDatas = {}
+        for message in messages:
+            rightData = str(message[0:wLen])
+            lo = False
+            for regix in regixS:
+                if regix in rightData:
+                    if regix not in splitDatas:
+                        splitDatas[regix] = []
+                    splitDatas[regix].append(message)
+                    lo = True
+            if not lo:
+                if 'unkown' not in splitDatas:
+                    splitDatas['unkown'] = []
+                splitDatas['unkown'].append(message)
+        return splitDatas
+
+
 if __name__ == '__main__':
     MessageConvert.clsMessagesByIp('/home/wxw/data/http/httpSource/purehttp.pcap', '/home/wxw/data/http/httpSplitOne')

@@ -5,6 +5,7 @@ from common.Merger.WordsMerger import WordsMerger
 from common.analyzer.analyzer_common import base_analyzer
 from common.DataTuning.FeatureGenerate.WordsFGene import WordsFeatureGene
 from common.Classify.Kmeans import KmeansClasser
+from common.Classify.Dbscan import DbScanClasser
 import sys
 
 class TextClassify:
@@ -56,6 +57,13 @@ class TextClassify:
         wFeatures = self.FeGenerator()
         clser = KmeansClasser()
         return clser.clsMessages(self.messages, wFeatures, Kcls)
+
+    def clsByDbscan(self, wSize, TK, wLen, mindis, minpt):
+        self.cntWord(wSize, TK, wLen)
+        self.cntPro()
+        wFeatures = self.FeGenerator()
+        clser = DbScanClasser()
+        return clser.clsMessages(self.messages, wFeatures, mindis, minpt)
 
 
 

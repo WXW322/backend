@@ -19,6 +19,12 @@ class ApriorFreAnalyZer(BaseFreAnalyZer):
                     seNew.add(textNew)
         return seNew
 
+    def getWcnt(self, words):
+        tDic = {}
+        for word in words:
+            tDic[word] = self.getTextCnt(word)
+        print(tDic)
+
     def genInitSingle(self):
         tempTextSet = set()
         for s in self.texts:
@@ -78,7 +84,10 @@ class ApriorFreAnalyZer(BaseFreAnalyZer):
 
     def getApriorFre(self):
         tempTextSet = self.genInitSet()
+        #print(tempTextSet)
+        #print(self.getWcnt(tempTextSet))
         self.updateSet(self.filterSeByCnt(list(tempTextSet)))
+        #print(self.freTextSet)
         while(True):
             startTime = time.time()
             newDatas = self.genStr()
@@ -87,6 +96,7 @@ class ApriorFreAnalyZer(BaseFreAnalyZer):
             nowSe = self.filterSeByCnt(newDatas)
             endTime = time.time()
             print('The filter time is %d %s' % (len(nowSe), str(endTime - startTime)))
+            #print(self.freTextSet)
             if(len(nowSe) == 0):
                 break
             else:

@@ -17,5 +17,16 @@ class TextFormInfer:
             clsFormats.append(tempFormat)
         return clsFormats
 
+    def ladDbscanFormatInfer(self, wSize, TK, wLen, mindis, minpt):
+        clsDatas = self.clser.clsByDbscan(wSize, TK, wLen, mindis, minpt)
+        clsFormats = []
+        formatInfer = Format()
+        for clsData in clsDatas.values():
+            tMessages = [RawMessage(message) for message in clsData]
+            tempFormat = Symbol(messages=tMessages)
+            formatInfer.splitAligned(tempFormat, doInternalSlick=True)
+            clsFormats.append(tempFormat)
+        return clsFormats
+
 
 

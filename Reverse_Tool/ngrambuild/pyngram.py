@@ -171,9 +171,9 @@ class voters:
         for key in t_dics:
             t_frer[key] = -np.log(t_dics[key] / t_fredic[len(key.split(' '))])
             t_biaozhun[len(key.split(' '))].append(t_frer[key])
-        for key in t_biaozhun:
-            print(key)
-            print(t_biaozhun[key])
+        #for key in t_biaozhun:
+         #   print(key)
+          #  print(t_biaozhun[key])
         #redis_writer.insert_to_redis('raw_frequent', t_frer)
         for i in range(1,nrange + 1):
             t_mean[i] = np.mean(np.array(t_biaozhun[i]))
@@ -265,6 +265,52 @@ class voters:
         else:
             rawWords = self.getQueryWords(key)
             entryWords = self.get_backentry(rawWords, VeConfig.veParameters['height'] + 1)
+            self.redisDeal.insert_to_redis(entryKey, entryWords)
+        return entryWords
+
+    def getQueryMsgWords(self, messages, key=' '):
+        keyR = key + '_' + 'RawWords'
+        keyWords = {}
+        if self.redisDeal.is_exist_key(keyR):
+            keyWords = self.redisDeal.read_from_redis(keyR)
+        else:
+            keyWords = self.get_keywords(messages, VeConfig.veParameters['height']+1)
+            if key != ' ':
+                self.redisDeal.insert_to_redis(key, keyWords)
+        return keyWords
+
+    def getQueryMsgFrequentWords(self, messages, key=' '):
+        freWords = {}
+        freKey = key + '_' + 'FreWords'
+        if self.redisDeal.is_exist_key(freKey):
+            freWords = self.redisDeal.read_from_redis(freKey)
+        else:
+            rawWords = self.getQueryMsgWords(messages, key)
+            freWords = self.get_frequent(rawWords, VeConfig.veParameters['height'] + 1)
+            if key != ' ':
+                self.redisDeal.insert_to_redis(freKey, freWords)
+        return freWords
+
+    def getQueryMsgEntryWords(self, messages, key=' '):
+        entryWords = {}
+        entryKey = key + '_' + 'EntryWords'
+        if self.redisDeal.is_exist_key(entryKey):
+            entryWords = self.redisDeal.read_from_redis(entryKey)
+        else:
+            rawWords = self.getQueryMsgWords(messages, key)
+            entryWords = self.get_backentry(rawWords, VeConfig.veParameters['height'] + 1)
+            if key != ' ':
+                self.redisDeal.insert_to_redis(entryKey, entryWords)
+        return entryWords
+
+    def getOrderWords(self, key):
+        entryWords = {}
+        entryKey = key + '_' + 'OrderWords'
+        if self.redisDeal.is_exist_key(entryKey):
+            entryWords = self.redisDeal.read_from_redis(entryKey)
+        else:
+            rawWords = self.getQueryWords(key)
+            #entryWords = self.(rawWords, VeConfig.veParameters['height'] + 1)
             self.redisDeal.insert_to_redis(entryKey, entryWords)
         return entryWords
 

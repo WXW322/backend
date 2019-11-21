@@ -110,6 +110,12 @@ class splitter:
         primBorders = freVoter.vote_for_messages(messages, VeConfig.veParameters['height'])
         return primBorders
 
+    def getFreVotesByMsg(self, messages, height=3):
+        freWords = self.ngram.getQueryMsgFrequentWords(messages)
+        freVoter = frequence_voter(freWords)
+        primBorders = freVoter.vote_for_messages(messages, height)
+        return primBorders
+
     def getEntryVotes(self, conFigParas, messages):
         key = conFigParas.getUserPathDynamic()
         entryWords = self.ngram.getQueryEntryWords(key)
