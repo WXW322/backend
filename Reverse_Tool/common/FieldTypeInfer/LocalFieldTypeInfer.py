@@ -25,7 +25,6 @@ class LocalFieldTypeInfer(BaseFieldTypeInfer):
     def inferLen(self, datas, lenDatas):
         datasLenBig = Converter.bytesToBigInt(datas)
         datasLittle = Converter.bytesToLittleInt(datas)
-        print(datasLenBig, lenDatas)
         personBig = base_analyzer.pearson(datasLenBig, lenDatas)
         personLittle = base_analyzer.pearson(datasLittle, lenDatas)
         if personBig > self.lengthThreshold or personLittle > self.lengthThreshold:

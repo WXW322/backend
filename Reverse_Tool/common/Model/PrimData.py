@@ -22,3 +22,6 @@ class primeData:
 
     def getData(self, loc):
         return self.message[loc[0]:loc[1]]
+
+    def getNowData(self):
+        return self.message[self.boundaries[self.loc-1]: self.boundaries[self.loc]]

@@ -57,11 +57,11 @@ class FormatViewTest:
         while (i < len(datas)):
             primDatas.append(primeData(datas[i], borders[i], i))
             i = i + 1
-        tree_builder = treeFormat(primDatas, 20, 0.2)
+        tree_builder = treeFormat(primDatas, 10, 0.2)
         #t_result = tree_builder.generateNT()
         t_result = tree_builder.generateSplitNT()
-        #t_result.showTree(0)
-        tree_builder.layyerTree()
+        t_result.showTree(0)
+        #tree_builder.layyerTree()
 
 
 if __name__ == '__main__':

@@ -23,7 +23,6 @@ class Desiner:
         for boudary in boundaries:
             boudary.insert(0 , 0)
             sorted(boudary)
-            print(boudary)
             multyBorders.append(boudary)
         return multyBorders
 

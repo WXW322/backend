@@ -130,7 +130,7 @@ class treeFormat(treef):
                     else:
                         childNodes = t_node.splitNode()
                         for childnode in childNodes:
-                            childnode.children = childnode.children + self.generateSplitNode(t_num[key], childnode, depth + 1, maxD)
+                            childnode.children = childnode.children + self.generateSplitNode(childnode.ids, childnode, depth + 1, maxD)
                             t_r.append(childnode)
                     # t_node.children = t_node.children + self.generate_node(t_num[key])
             else:
@@ -138,7 +138,7 @@ class treeFormat(treef):
         if len(t_v) > 0:
             if len(t_v) < self.C:
                 t_node = node((t_start, -1), t_v)
-                t_node.word_type = 'VL'
+                t_node.word_type = 'LV'
                 t_r.append(t_node)
             else:
                 maxData = max([m.now() for m in t_v])

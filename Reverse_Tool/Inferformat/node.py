@@ -50,8 +50,16 @@ class node:
                 nodeDatas.append(data.getData(self.loc))
         return nodeDatas
 
+    def getNodeDataV(self):
+        nodeDatas = []
+        if self.ids != None:
+            for data in self.ids:
+                nodeDatas.append(data.getNowData())
+        return nodeDatas
+
     def getNodeType(self):
-        datas = self.getNodeData()
+        #datas = self.getNodeData()
+        datas = self.getNodeDataV()
         Lens = []
         for data in self.ids:
             Lens.append(len(data.message))
@@ -65,7 +73,7 @@ class node:
             self.word_type = 'V'
 
     def upDataByType(self):
-        datas = self.getNodeData()
+        datas = self.getNodeDataV()
         if self.word_type == 'C':
             self.value.append(datas[0])
         elif self.word_type == 'F':
@@ -84,15 +92,18 @@ class node:
         for key in tchilddatas:
             tcnode = node(self.loc, tchilddatas[key], self.word_type)
             tcnode.upDataByType()
-            if self.loc[0] == 0:
-                print(tcnode.word_type, tcnode.value)
+            #if self.loc[0] == 0:
+            #    print(tcnode.word_type, tcnode.value)
             cnodes.append(tcnode)
         return cnodes
 
     def showTree(self, h):
         stList = [' ' for i in range(h)]
         prestr = ''.join(stList)
-        print(prestr + str(self.loc) + str(self.word_type) + str(self.value))
+        LL = ''
+        if self.ids != None:
+            LL = str(len(self.ids))
+        print(prestr + str(self.loc) + str(self.word_type) + str(self.value) + LL)
         for child in self.children:
             child.showTree(h+1)
 
