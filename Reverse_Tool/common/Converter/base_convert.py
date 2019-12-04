@@ -216,6 +216,12 @@ class Converter:
             item.sort()
         return rawlist
 
+    def ConvertListDicToOrder(self, rawlist):
+        LS = []
+        for item in rawlist:
+            LS.append(sorted(item.items(),key=lambda x:x[0]))
+        return LS
+
     def MergeLists(self, ListA, ListB):
         s_los = set()
         for key in ListA:

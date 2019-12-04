@@ -12,6 +12,8 @@ from common.Converter.base_convert import Converter
 from Data_base.Data_redis.redis_deal import redis_deal
 from Config.UserConfig import UserConfig
 from Config.VeConfig import VeConfig
+from common.Converter.word_converter import word_convert
+import sys
 
 now_time = time.strftime("%Y-%m-%d %H:%m:%s", time.localtime(time.time()))
 voter_logger = get_logger(log_path + '/message_vote' + vote_pre + now_time, 'messagedetaillogger')
@@ -27,6 +29,7 @@ class voters:
         self.glvotes = None
         self.svotes = None
         self.redisDeal = redis_deal()
+        self.wCvert = word_convert()
 
     def query_key(self,key):
         return self.words_table[key],self.words_fre[key],self.words_entry[key]
@@ -234,6 +237,11 @@ class voters:
                 t_entrys[key] = (t_entrys[key] - t_entrymean[len(key.split(' '))]) / (t_entrystd[len(key.split(' '))])
         return t_entrys
 
+    def getOrder(self, rawwords, nrange):
+        orderWords = self.wCvert.ConvertRawWordsToOrder(rawwords, nrange)
+        return orderWords
+
+
     def getQueryWords(self, key):
         key = key + '_' + 'RawWords'
         keyWords = {}
@@ -303,6 +311,18 @@ class voters:
                 self.redisDeal.insert_to_redis(entryKey, entryWords)
         return entryWords
 
+    def getQueryMsgOrderWords(self, messages, key=' '):
+        orderWords = {}
+        orderKey = key + '_' + 'OrderWords'
+        if self.redisDeal.is_exist_key(orderKey):
+            orderWords = self.redisDeal.read_from_redis(orderKey)
+        else:
+            rawWords = self.getQueryMsgWords(messages, key)
+            orderWords = self.getOrder(rawWords, VeConfig.veParameters['height'] + 1)
+            if key != ' ':
+                self.redisDeal.insert_to_redis(orderKey, orderWords)
+        return orderWords
+
     def getOrderWords(self, key):
         entryWords = {}
         entryKey = key + '_' + 'OrderWords'
@@ -310,6 +330,7 @@ class voters:
             entryWords = self.redisDeal.read_from_redis(entryKey)
         else:
             rawWords = self.getQueryWords(key)
+            #orderWords = self.getOrder(ra)
             #entryWords = self.(rawWords, VeConfig.veParameters['height'] + 1)
             self.redisDeal.insert_to_redis(entryKey, entryWords)
         return entryWords

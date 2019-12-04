@@ -6,11 +6,13 @@ from common.ranker import ranker
 import time
 import numpy as np
 from Config.ve_strategy import ve_strategy
+from common.Sorter.BaseSort import BaseSort
 
 class word_convert(Converter):
     def __init__(self):
         super().__init__
         self.rank = ranker()
+        self.bS = BaseSort()
         self.analysist = base_analyzer()
 
     def split_words(self, words, t_len):
@@ -88,23 +90,38 @@ class word_convert(Converter):
         borders.append(words_rank[-1][1])
         return borders
 
+    def ConvertwordToCntOrder(self, wA, wB):
+        cntA = 0
+        cntB = 0
+        cntA = sum([w[1] for w in wA])
+        cntB = sum([w[1] for w in wB])
+        i = 0
+        while(i < len(wA)):
+            wA[i] = list(wA[i])
+            wA[i][1] = (wA[i][1] * (cntB / cntA)) / 2
+            i = i + 1
+        return wA
+
     def ConvertRawWordsToOrder(self, rawwords, nrange, ordertype = "abs"):
         Analyzer = base_analyzer()
         WordRanker = ranker()
         Converter = word_convert()
         num_words = Converter.splitwords_bylen(rawwords, nrange)
         for len_word in num_words:
-            num_words[len_word] = WordRanker.rank_tulple(num_words[len_word], reverse=True)
-        PrimeWords = [word[0] for word in num_words[4]]
+            num_words[len_word] = WordRanker.rank_words(num_words[len_word], reverse=True)
+            #num_words[len_word] = WordRanker.rank_tulple(num_words[len_word], reverse=True)
+        PrimeWords = [word[0] for word in num_words[nrange]]
         PrimeOrders = {}
         for i in range(len(PrimeWords)):
             PrimeOrders[PrimeWords[i]] = i
         OrderWords = {}
-        OrderWords[4] = PrimeOrders
+        OrderWords[nrange] = PrimeOrders
         start_time = time.time()
-        for i in range(1, nrange - 1):
+        for i in range(1, nrange):
             if ordertype == 'abs':
                 OrderWords[i] = self.ConvertWordToNumOrder([word[0] for word in num_words[i]], PrimeWords, rawwords)
+            elif ordertype == 'Set':
+                OrderWords[i] = self.ConvertwordToCntOrder(num_words[i], num_words[nrange])
             else:
                 OrderWords[i] = Converter.convert_word_order([word[0] for word in num_words[i]], PrimeWords)
         OrderWords = self.convert_order_to_raw(OrderWords)
@@ -113,8 +130,10 @@ class word_convert(Converter):
         #DataWriter.insert_to_redis('order_raw_words', OrderWords)
 
 
+
     def convert_order_to_raw(self, order_words):
         raw_words = {}
+        print(order_words)
         for num_key in order_words:
             for w_key in order_words[num_key]:
                 raw_words[w_key] = order_words[num_key][w_key]

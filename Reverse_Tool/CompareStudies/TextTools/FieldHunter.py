@@ -46,7 +46,7 @@ class FieldHunter:
             if not self.isNumOrAlpha(word[0]):
                 candidates.append(word[0])
         print(candidates)
-        return delimiter
+        return candidates
 
 
 if __name__ == '__main__':

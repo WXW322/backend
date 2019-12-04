@@ -1,6 +1,7 @@
 import scapy.all as scapy
 from scapy.utils import PcapReader,PcapWriter
 from common.Converter.base_convert import Converter
+import sys
 
 class MessageConvert(Converter):
     def __init__(self):
@@ -95,6 +96,19 @@ class MessageConvert(Converter):
                 if 'unkown' not in splitDatas:
                     splitDatas['unkown'] = []
                 splitDatas['unkown'].append(message)
+        return splitDatas
+
+    @staticmethod
+    def clsMsgsByRegix(regixS, wLen, messages):
+        splitDatas = {}
+        for message in messages:
+            rightData = message[0:wLen]
+            for regix in regixS:
+                if rightData.find(regix) != -1:
+                    if regix not in splitDatas:
+                        splitDatas[regix] = []
+                    splitDatas[regix].append(message)
+                    lo = True
         return splitDatas
 
 

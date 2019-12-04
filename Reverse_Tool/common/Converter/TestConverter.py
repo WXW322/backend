@@ -17,7 +17,7 @@ def TestHex():
 
 def TestHexConvert():
     cvt = Converter()
-    print(cvt.byteListToHex(b'12345678'))
+    print(cvt.MergeListGroup([[1, 3, 4]], [[2, 5, 6]]))
 
 if __name__ == '__main__':
     TestHexConvert()

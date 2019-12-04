@@ -7,6 +7,8 @@ from Data_base.Data_redis.redis_deal import redis_deal
 import json
 from common.Spliter.vertical_splitter import vertical_splitter
 from common.Merger.base_merger import base_merger
+from Config.UserConfig import UserConfig
+from IcsProtocol.Config.GveConf import GveConf
 
 
 class GvoterLogic(splitter):
@@ -76,6 +78,15 @@ class GvoterLogic(splitter):
     def splitMessages(self, configParas, gveConfigParas, messages):
         gBoundaries = self.getSplitMessages(configParas, gveConfigParas, messages)
         return self.msgSpliter.splitMessages([gBoundaries for i in range(len(messages))], messages)
+
+    def splitFileMessages(self, filePath, messages):
+        gVeParas = GveConf.geneGveParas()
+        uConfig = UserConfig('/home/wxw/data/ToolDatas/15895903730.10.222', '15895903730')
+        messageSplitSums = self.splitMessages(uConfig, gVeParas, messages)
+        return messageSplitSums
+
+
+
 
 
 

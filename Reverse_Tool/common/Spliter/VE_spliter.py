@@ -20,6 +20,7 @@ class splitter:
         self.redis_read = redis_deal()
         self.parameters = ve_strategy().vote_parameters
         self.ngram = voters()
+        self.cvt = Converter()
 
     def split_by_ve(self, messages, h, combine, model, v_way, T=0, r=0, ways="g"):
         voter = voters()
@@ -115,6 +116,29 @@ class splitter:
         freVoter = frequence_voter(freWords)
         primBorders = freVoter.vote_for_messages(messages, height)
         return primBorders
+
+    def getVeVotesByMsg(self, messages, height=3):
+        freBorders = self.getFreVotesByMsg(messages)
+        entryVoters = self.getEntryVotesByMsgs(messages)
+        i = 0
+        fBorders = []
+        while(i < len(freBorders)):
+            fBorders.append(self.cvt.MergeDicts(freBorders[i], entryVoters[i]))
+            i = i + 1
+        return fBorders
+
+    def getOrderVotesByMsgs(self, messages, height=3):
+        orderWords = self.ngram.getQueryMsgOrderWords(messages)
+        ordervoter = OrderVoter(orderWords)
+        primBorders = ordervoter.vote_for_messages(messages, height)
+        return primBorders
+
+    def getEntryVotesByMsgs(self, messages, height=3):
+        entryWords = self.ngram.getQueryMsgEntryWords(messages)
+        entryVoter = Entry_voter(entryWords)
+        primBorders = entryVoter.vote_for_messages(messages, height)
+        return primBorders
+
 
     def getEntryVotes(self, conFigParas, messages):
         key = conFigParas.getUserPathDynamic()

@@ -5,7 +5,7 @@ from common.Converter.base_convert import Converter
 from common.analyzer.analyzer_common import base_analyzer
 
 class LocalFieldTypeInfer(BaseFieldTypeInfer):
-    def __init__(self, FuncT = 22):
+    def __init__(self, FuncT = 20):
         self.constThreshold = 0.98
         self.FuncT = FuncT
         self.lengthThreshold = 0.8

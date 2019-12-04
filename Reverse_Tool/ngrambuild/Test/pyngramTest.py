@@ -11,6 +11,10 @@ class pyngramTest:
         messages = get_puredatas(messages)[0:10]
         print(self.vv.getQueryMsgWords(messages))
 
+    def TestOrderWords(self):
+        pass
+
+
 
 if __name__ == '__main__':
     pTest = pyngramTest()

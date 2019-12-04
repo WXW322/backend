@@ -29,6 +29,10 @@ def read_datas(dirs,ways = "single"):
             t_data = PCAPImporter.readFile(t_path).values()
             t_datas.append(t_data)
     return t_datas
+
+def read_filedatas(filePath):
+    datas = PCAPImporter.readFile(filePath).values()
+
  
 def getSummary(data, lo):
     dataSummary = {}
@@ -37,7 +41,7 @@ def getSummary(data, lo):
     dataSummary['time'] = '0' + str(data.date)[lo:]
     dataSummary['source'] = data.source
     dataSummary['destination'] = data.destination
-    dataSummary['length'] = str(len(data.data))
+    dataSummary['summary'] = 'Len: ' + str(len(data.data))
     return dataSummary
 
 def getSummaries(datas, start):

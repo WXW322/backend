@@ -79,22 +79,51 @@ def filterWords(words):
         if word[0] not in words:
             rWords.add(word[0])
     i = 0
+    print(rWords)
+    uniwords = []
+    deliword = None
     while(i < len(words) - 1):
         if words[i][0] not in rWords:
             continue
-        j = i + 1
+        j = 0
         isUnique = True
         while(j < len(words)):
-            tempS = '%s %s'%(words[i][0], words[j][0])
-            if tempS in rWords:
+            if (len(words[j][0]) > len(words[i][0]) and words[j][0].find(words[i][0]) != -1):
                 isUnique = False
                 break
             j = j + 1
         if(isUnique):
-            return words[i+1][0]
+            uniwords.append(words[i][0])
+            if deliword == None:
+                deliword = words[i][0]
         i = i + 1
-    return words[-1][0]
+    print(uniwords)
+    return deliword
 
+def filterFieldWords(words):
+    '''
+      :param words:[(word, num)]
+      :return: str
+      '''
+    print(words)
+    uniwords = []
+    deliword = None
+    i = 0
+    while (i < len(words) - 1):
+        j = 0
+        isUnique = True
+        while (j < len(words)):
+            if (len(words[j]) > len(words[i]) and words[j].find(words[i]) != -1):
+                isUnique = False
+                break
+            j = j + 1
+        if (isUnique):
+            uniwords.append(words[i])
+            if deliword == None:
+                deliword = words[i]
+        i = i + 1
+    print(uniwords)
+    return deliword
 
 def rank_word(word_cnt, text):
     words_score = []

@@ -12,6 +12,7 @@ class KmeansClasser:
 
     def clsMessages(self, messages, datas, K):
         kMeansResult = self.clsDatas(datas, K)
+        print('it ', K)
         dataLabels = kMeansResult.labels_
         i = 0
         clsMessages = {}

@@ -8,6 +8,8 @@ from common.Spliter.MsgSpliter import MsgSpliter
 from IcsProtocol.Logic.GVoterLogic import GvoterLogic
 from Config.UserConfig import UserConfig
 from IcsProtocol.Config.GveConf import GveConf
+from common.DataTuning.RawDataTuning.DataTuning import DataTuning
+from BinaryProtocol.Logic.MsgSplitLogic import MegSplitLogic
 # Create your views here.
 
 def getDatas(request):
@@ -69,15 +71,27 @@ def getProtoSplitSummary(request):
     postDatas = getPostJson(request)
     pageOrder = postDatas.get('pageNum')
     pageCnt = postDatas.get('pageCnt')
+    proType = postDatas.get('proType')
     startNum = int(pageOrder) * int(pageCnt)
-    messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
-    messageDatas = get_puredatas(messageDatas)
+    dataTuning = DataTuning()
+    # future
+    messageDatas = dataTuning.readDatasTemp('')
+    #messageDatas = dataTuning.readDatas('/home/wxw/data/ToolDatas/15895903730.10.222')
+    #messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
+    #messageDatas = get_puredatas(messageDatas)
+    #gVeParas = GveConf.geneGveParas()
+    #uConfig = UserConfig('/home/wxw/data/ToolDatas/15895903730.10.222', '15895903730')
     messageSplitSums = None
-    gVeParas = GveConf.geneGveParas()
-    uConfig = UserConfig('/home/wxw/data/ToolDatas/15895903730.10.222', '15895903730')
-    msgSpliter= MsgSpliter()
-    gVoterLogic = GvoterLogic()
-    messageSplitSums = gVoterLogic.splitMessages(uConfig, gVeParas, messageDatas)
+    if proType == 'icsPro':
+        gVoterLogic = GvoterLogic()
+        messageSplitSums = gVoterLogic.splitFileMessages('', None)
+    elif proType == 'textPro':
+        pass
+    else:
+        binaryMsgSplit = MegSplitLogic()
+        messageSplitSums = binaryMsgSplit.getOrderBordersNyPath('',messageDatas)
+
+    #messageSplitSums = gVoterLogic.splitMessages(uConfig, gVeParas, messageDatas)
     i = 0
     splitResults = []
     while(i < pageCnt):

@@ -1,6 +1,7 @@
 
 from common.Converter.base_convert import Converter
 from common.readdata import *
+import sys
 
 class MsgSpliter:
     def __init__(self):
@@ -12,6 +13,8 @@ class MsgSpliter:
         los = 0
         startLo = 0
         hexDatas = hexData.split(' ')
+        if boundary[los] == 0:
+            los = los + 1
         for i in range(min(len(hexDatas), maxRange)):
             if los >= len(boundary):
                 splitMsg = splitMsg + hexDatas[i] + ' '
@@ -22,7 +25,7 @@ class MsgSpliter:
                 los = los + 1
         return splitMsg
 
-    def splitMessages(self, boundaries, messages, maxRange=50):
+    def splitMessages(self, boundaries, messages, maxRange=15):
         splitMsgs= []
         for i in range(len(boundaries)):
             splitMsgs.append(self.splitMessage(boundaries[i], messages[i], maxRange))

@@ -4,7 +4,38 @@ from textops.TextParseLogic import TextParseLogic
 
 class FTPDataTuning:
     def __init__(self):
-        pass
+        self.msgP = TextParseLogic()
+        self.cmds = {b'PWD', b'331 Please specify the password', b'RETR', b'TYPE I', b'250 Directory successfully changed',
+                     b'227 Entering Passive Mode', b'PASS', b'150 Ok to send data',
+                     b'226 Directory send OK', b'220', b'226 Transfer complete', b'230 Login successful',
+                     b'NLST', b'STOR', b'LIST', b'USER',
+                     b'550 Create directory operation', b'200 Switching to', b'150 Opening BINARY mode data connection for',
+                     b'150 Here comes the directory listing', b'200 Switching to ASCII mode', b'MKD', b'257', b'TYPE A',
+                     b'CWD', b'PASV'}
+
+    def getDatas(self):
+        datas = read_datas('/home/wxw/data/ftp/ftpData', 'single')
+        datas = get_puredatas(datas)
+        return datas
+
+    def getDiff(self, datas):
+        desDatas = self.msgP.ConvertDataToMessage(datas, b'\r\n')
+        desNowDatas = [datanow.now() for datanow in desDatas]
+        diff = {}
+        for desNow in desNowDatas:
+            # desNow = str(desNow).split(' ')[0]
+            desNow = str(desNow)
+            lo = desNow.find('(')
+            if lo != -1:
+                desNow = desNow[0:lo]
+            lo = desNow.find('/')
+            if lo != -1:
+                desNow = desNow[0:lo]
+            if desNow not in diff:
+                diff[desNow] = 1
+            else:
+                diff[desNow] = diff[desNow] + 1
+        print(diff)
 
     def tuningTwoHttpBydire(self):
         srcData, desData = self.tuningHttpByregix()
@@ -44,6 +75,7 @@ class FTPDataTuning:
                 diff[desNow] = diff[desNow] + 1
         print(diff)
 
+
     def tuningHttpByregix(self):
         datas = read_datas('/home/wxw/data/ftp/ftpData', 'multy')
         datasF = []
@@ -58,7 +90,56 @@ class FTPDataTuning:
         print(len(desDatasF))
         return srcDatasF, desDatasF
 
+    def getTotalData(self):
+        Tdatas = []
+        srcD, desD = self.tuningHttpByregix()
+        Tdatas.extend(srcD)
+        Tdatas.extend(desD)
+        return Tdatas
+
+    def sampleData(self):
+        datas = self.getDatas()
+        datasSplit = MessageConvert.clsMsgsByRegix(self.cmds, 20, datas)
+        Fdatas = []
+        for key in datasSplit:
+            print(key, len(datasSplit[key]))
+            if len(datasSplit[key]) > 1000:
+                print('zzz')
+                Fdatas.extend(datasSplit[key][0:500])
+            else:
+                Fdatas.extend(datasSplit[key])
+        print(len(Fdatas))
+        return Fdatas
+
+    def getTotalCommond(self):
+        datas = self.getDatas()
+        self.getDiff(datas)
+
+    def getMsgsLen(self, clses):
+        correLen = 0
+        conciouLen = 0
+        print(len(clses))
+        clsCmds = []
+        for cls in clses:
+            clsCmd = MessageConvert.clsMsgsByRegix(self.cmds, 20, cls)
+            clsCmds.append(clsCmd)
+        for clscmd in clsCmds:
+            if len(clscmd) == 1:
+                correLen = correLen + 1
+        for cmd in self.cmds:
+            tLo = 0
+            for clscmd in clsCmds:
+                if cmd in clscmd:
+                    tLo = tLo + 1
+            if tLo == 1:
+                conciouLen = conciouLen + 1
+        print(correLen, conciouLen)
+
+
+
 
 if __name__ == '__main__':
     ftptuning = FTPDataTuning()
-    ftptuning.tuningTwoHttpBydire()
+    ftptuning.sampleData()
+    #ftptuning.getTotalCommond()
+    #ftptuning.tuningTwoHttpBydire()

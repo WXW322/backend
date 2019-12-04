@@ -7,14 +7,20 @@ from textops.TextParseLogic import TextParseLogic
 import sys
 from common.RanKer.BaseRankModel import BaseRankModel
 from common.Converter.base_convert import Converter
+from common.DataTuning.RawDataTuning.HttpDataTuning import HttpDataTuning
+from common.DataTuning.RawDataTuning.FTPDataTuning import FTPDataTuning
+from common.DataTuning.RawDataTuning.RedisDataTuning import RedisDataTuning
 
 class TextClassifyLogic:
     def __init__(self, messages, tRate, sRate, wRate, wHeight):
         self.tRate = tRate
         self.srate = sRate
-        self.wRate = wRate
+        self.wRate = self.srate
         self.wHeight = wHeight
         self.messages = messages
+        self.httpData = HttpDataTuning()
+        self.ftpData = FTPDataTuning()
+        self.redisData = RedisDataTuning()
 
     def GetLocData(self, datas):
         nowLocData = []
@@ -85,12 +91,13 @@ class TextClassifyLogic:
         rankWords = self.GetWodsRank(messages)
         funCode = None
         for word in rankWords:
-            if word not in preWords:
+            if word not in preWords and word[1] / len(self.messages) > self.tRate:
                 funCode = word
                 break
         fResult = []
         print(funCode)
-        if funCode is not None and funCode[1] / len(messages) > self.srate:
+        #if funCode is not None and funCode[1] / len(messages) > self.trate:
+        if funCode is not None:
             clsOne, clsTwo = self.ClassifyByCodes(funCode[0], messages)
             print(len(clsOne), len(clsTwo))
             if len(clsTwo) / len(self.messages) > self.tRate:
@@ -136,10 +143,28 @@ class TextClassifyLogic:
             finalFormats.append(tempFormat)
         return finalFormats
 
-    def FormatInferCirclely(self, messages):
+    def FormatInferCirclely(self, messages, Mtype):
         preFre = set()
         #result = textClassify.classifyMessages(preFre, messages)
         result = self.classifyMessages(preFre, messages)
+        clsResult = []
+        for res in result:
+            clsr = []
+            for msg in res:
+                clsr.append(msg.message)
+            clsResult.append(clsr)
+        if Mtype == 'H':
+            self.httpData.getMsgsLen(clsResult)
+        elif Mtype == 'F':
+            self.ftpData.getMsgsLen(clsResult)
+        else:
+            self.redisData.getMsgsLen(clsResult)
+        #httpTuning = HttpDataTuning()
+        #print(httpTuning.getMsgsLen(clsResult))
+        #ftpTuning = FTPDataTuning()
+        #print(ftpTuning.getMsgsLen(clsResult))
+        #redisTuning = RedisDataTuning()
+        #redisTuning.getMsgsLen(clsResult)
         finalFormats = []
         formatInfer = Format()
         for dataList in result:
@@ -172,7 +197,7 @@ if __name__ == '__main__':
     print(len(messages))
     message_parser = TextParseLogic()
     messages = message_parser.ConvertDataToMessage(messages, b'\r\n')
-    textClassify = TextClassifyLogic(messages, 0.1, 0.1, 0.2, 3)
+    textClassify = TextClassifyLogic(messages, 0.1, 0.4, 0.2, 3)
     fFormats = textClassify.FormatInferCirclely(messages)
     for f in fFormats:
         print(f.getLeafFields)

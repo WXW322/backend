@@ -33,4 +33,25 @@ class MessageSplitMeasure(Base_measure):
             i = i + 1
         return (facc/len(DataTrue), frecall/len(DataTrue), f1/len(DataTrue))
 
+    def MeasuteLists(self, listA, listB):
+        i = 0
+        lo = True
+        while(i < len(listA)):
+            if listA[i] != listB[i]:
+                lo = False
+                break
+            i = i + 1
+        return lo
+
+    def MLs(self, LAS, LBS):
+        i = 0
+        result = []
+        while(i < len(LAS)):
+            if not self.MeasuteLists(LAS[i], LBS[i]):
+                result.append((LAS[i], LBS[i]))
+            i = i + 1
+        return result
+
+
+
 

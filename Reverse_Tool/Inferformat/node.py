@@ -1,10 +1,12 @@
 import copy
 from common.FieldTypeInfer.LocalFieldTypeInfer import LocalFieldTypeInfer
 from common.Converter.base_convert import Converter
+import sys
 
 class node:
     def __init__(self, loc = (0, 0), ids = None, wType = None, childs = []):
-        self.children = childs
+        #self.children = childs
+        self.children = []
         self.loc = loc
         self.ids = ids
         self.result = []
@@ -85,7 +87,7 @@ class node:
         cnodes = []
         tchilddatas = {}
         for data in self.ids:
-            item = data.getData(self.loc)
+            item = data.getNowData()
             if item not in tchilddatas:
                 tchilddatas[item] = []
             tchilddatas[item].append(data)
@@ -106,6 +108,44 @@ class node:
         print(prestr + str(self.loc) + str(self.word_type) + str(self.value) + LL)
         for child in self.children:
             child.showTree(h+1)
+
+    def getGraph(self, order, Nodes, Edges, cnts):
+        if cnts[0] > 1000:
+            return order
+        nowLabel = order
+        for child in self.children:
+            order = order + 1
+            tNode = (order, order)
+            Nodes.append(tNode)
+            cnts[0] = cnts[0] + 1
+            if child.word_type == 'C' or child.word_type == 'F':
+                tEdge = (nowLabel, order, child.value[0])
+            else:
+                tEdge = (nowLabel, order, 'any')
+            Edges.append(tEdge)
+            order = child.getGraph(order, Nodes, Edges, cnts)
+        return order
+
+    def miNigraph(self):
+        pass
+
+    def transToDictTree(self):
+        tNodeData = {}
+        if self.word_type == 'C' or self.word_type == 'F':
+            tNodeData['name'] = str(self.value[0])
+        else:
+            tNodeData['name'] = 'any'
+        if len(self.children) == 0:
+            tNodeData['value'] = 1
+        else:
+            tNodeData['children'] = []
+            for child in self.children:
+                tNodeData['children'].append(child.transToDictTree())
+        return tNodeData
+
+
+
+
 
 
 

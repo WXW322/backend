@@ -90,10 +90,10 @@ if __name__ == '__main__':
     datacipYOne = [0.5, 0.5, 0.25]
     datacipYTwo = [1.0, 1.0, 1.0]
     xLabel = 'netzob'
-    yLabel = 'IPART'
+    yLabel = 'ProShot'
     #ylimData = (0.0, 1.10)
     #ylimData = (0.0, 1.10)
     ylimData = (0.0, 1.40)
     #barGenerator.plotFigure(xLabels, datamodbusYOne, datamodbusYTwo, xLabel, yLabel, ylimData)
     #barGenerator.plotFigure(xLabels, dataiec104YOne, dataiec104YTwo, xLabel, yLabel, ylimData)
-    barGenerator.plotBar(xLabels, datacipYOne, datacipYTwo, xLabel, yLabel, ylimData)
+    #barGenerator.plotBar(xLabels, datacipYOne, datacipYTwo, xLabel, yLabel, ylimData)

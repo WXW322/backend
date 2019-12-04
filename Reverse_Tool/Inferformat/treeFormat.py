@@ -16,18 +16,18 @@ class treeFormat(treef):
         self.tree.children = self.generate_node(self.datas)
         return self.tree
 
-    def generateNT(self):
+    def generateNT(self, h=10):
         t_ids = []
         self.tree = node()
         self.tree.word_type = 'root'
-        self.tree.children = self.generateNode(self.datas, self.tree, 0, 10)
+        self.tree.children = self.generateNode(self.datas, self.tree, 0, h)
         return self.tree
 
-    def generateSplitNT(self):
+    def generateSplitNT(self, h=10):
         t_ids = []
         self.tree = node()
         self.tree.word_type = 'root'
-        self.tree.children = self.generateSplitNode(self.datas, self.tree, 0, 7)
+        self.tree.children = self.generateSplitNode(self.datas, self.tree, 0, h)
         return self.tree
 
     def generate_node(self, datas):

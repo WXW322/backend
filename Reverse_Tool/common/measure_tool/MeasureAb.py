@@ -8,16 +8,41 @@ class MeasureAb(Base_measure):
         super(MeasureAb,self).__init__()
 
     def MeasureDic(self, dicA, dicB):
+        dicA = self.cvt(dicA)
+        dicB = self.cvt(dicB)
         t_lo = True
         for key in dicA:
-            if(dicA[key] != dicB[key]):
-                print(key, dicA[key], dicB[key])
+            if(key not in dicB or dicA[key] != dicB[key]):
                 t_lo = False
                 break
         return t_lo
 
+    def cvt(self, dic):
+        dics = {}
+        for key in dic:
+            dics[str(key)] = dic[key]
+        return dics
+
+    def MeasureDics(self, dicAs, dicBs):
+        i = 0
+        diffDic = []
+        while(i < len(dicAs)):
+            if not self.MeasureDic(dicAs[i], dicBs[i]) or not self.MeasureDic(dicBs[i], dicAs[i]):
+                diffDic.append((dicAs[i], dicBs[i]))
+            i = i + 1
+        return diffDic
+
     def Measure(self, DataTure, DataPredict):
         return self.MeasureDic(DataTure, DataPredict)
+
+    def MeasureTuple(self, tA, tB):
+        if tA[0] == tB[0] and tA[1] == tB[1]:
+            return True
+        else:
+            return False
+
+    def MeasureTuples(self, tAs, tBs):
+        result = []
 
 
 if __name__ == '__main__':

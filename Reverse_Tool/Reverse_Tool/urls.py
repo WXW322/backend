@@ -21,5 +21,6 @@ from . import view
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', view.hello),
-    url(r'common/', include('common.urls'))
+    url(r'common/', include('common.urls')),
+    url(r'formattree/', view.getFormatTree)
 ]
