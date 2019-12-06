@@ -43,7 +43,7 @@ class HttpDataTuning:
         newMsgs = []
         for message in messages:
             if message.find(delimiter) != -1:
-                newMsgs.append(message[0:15])
+                newMsgs.append(message)
         return newMsgs
 
     def getTotalDatas(self, messages):
@@ -135,7 +135,6 @@ class HttpDataTuning:
         for key in datas:
             print(key, len(datas[key]))
             if len(datas[key]) > 2000:
-                print('zzz')
                 Fdatas.extend(datas[key][0:2000])
             else:
                 Fdatas.extend(datas[key])

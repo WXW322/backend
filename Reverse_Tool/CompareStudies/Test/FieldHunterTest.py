@@ -42,8 +42,8 @@ class FieldHunterTest:
 
 if __name__ == '__main__':
     fT = FieldHunterTest()
-    fT.testForREDISFind()
-    #fT.testForFTPFind()
+    #fT.testForREDISFind()
+    fT.testForFTPFind()
     #fT.testForHTTPFind()
     #fT.testFordeliFind('/home/wxw/data/ftp/ftpData')
 

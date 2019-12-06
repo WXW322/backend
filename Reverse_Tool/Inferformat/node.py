@@ -143,6 +143,19 @@ class node:
                 tNodeData['children'].append(child.transToDictTree())
         return tNodeData
 
+    def transToIcsDictTree(self):
+        tNodeData = {}
+        tNodeData['name'] = self.value[0]
+        #print(tNodeData['name'])
+        #sys.exit()
+        if len(self.children) == 0:
+            tNodeData['value'] = 1
+        else:
+            tNodeData['children'] = []
+            for child in self.children:
+                tNodeData['children'].append(child.transToIcsDictTree())
+        return tNodeData
+
 
 
 

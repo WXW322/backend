@@ -89,7 +89,7 @@ class TextClassifyLogicTest:
         srctextcls = TextClassifyLogicTest(datas, 0.05, 0.2, 0.2, 3)
         # srctextcls = TextClassifyLogicTest(datas, 0.02, 0.2, 0.2, 3)
         # srctextcls = TextClassifyLogicTest(datas, 0.02, 0.1, 0.1, 3)
-        srctextcls.FormatInferCirclelyTestTwo(datas)
+        srctextcls.FormatInferCirclelyTestTwo(datas, '/home/wxw/paper/researchresult/text/formatInfer/KFCluster/httpOne.png', 'H')
 
     def ftpTest(self):
         ftptuning = FTPDataTuning()
@@ -141,8 +141,8 @@ class TextClassifyLogicTest:
 
 if __name__ == '__main__':
     message_parser = TextClassifyLogicTest([], 0.1, 0.1, 0.1, 0.1)
-    message_parser.redisGenerateTest()
-    #message_parser.httpGenerateTest()
+    #message_parser.redisGenerateTest()
+    message_parser.httpGenerateTest()
     #message_parser.ftpGenerateTest()
     #message_parser.ftpTest()
     #message_parser.httpTest()

@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from common.analyzer.analyzer_common import base_analyzer
 from common.ranker import ranker
 from common.DataTuning.RawDataTuning.HttpDataTuning import HttpDataTuning
+import sys
 
 class FieldHunter:
     def __init__(self):
@@ -45,8 +46,9 @@ class FieldHunter:
         for word in wordsNgram:
             if not self.isNumOrAlpha(word[0]):
                 candidates.append(word[0])
-        print(candidates)
-        return candidates
+        print(candidates[0:100])
+        print('cccd')
+        return candidates[0:100]
 
 
 if __name__ == '__main__':

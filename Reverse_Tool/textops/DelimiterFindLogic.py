@@ -9,6 +9,7 @@ from common.analyzer.analyzer_common import base_analyzer
 from common.DataTuning.RawDataTuning.HttpDataTuning import HttpDataTuning
 import sys
 
+
 analyzer = base_analyzer()
 def get_ngram_words(text, nrange = (1, 1), topk = 1):
     word_cnt = CountVectorizer(ngram_range=nrange, stop_words=[' '])
@@ -61,7 +62,7 @@ def is_unseen_words(words):
     ches = words.split(' ')
     #print(ches)
     for ch in ches:
-        if int(ch) > 41:
+        if int(ch) > 32:
             return False
     return True
 
@@ -79,7 +80,8 @@ def filterWords(words):
         if word[0] not in words:
             rWords.add(word[0])
     i = 0
-    print(rWords)
+    print('ss')
+    print(words)
     uniwords = []
     deliword = None
     while(i < len(words) - 1):
@@ -98,6 +100,7 @@ def filterWords(words):
                 deliword = words[i][0]
         i = i + 1
     print(uniwords)
+    print('ee')
     return deliword
 
 def filterFieldWords(words):
@@ -105,7 +108,7 @@ def filterFieldWords(words):
       :param words:[(word, num)]
       :return: str
       '''
-    print(words)
+    #print(words)
     uniwords = []
     deliword = None
     i = 0
@@ -113,7 +116,8 @@ def filterFieldWords(words):
         j = 0
         isUnique = True
         while (j < len(words)):
-            if (len(words[j]) > len(words[i]) and words[j].find(words[i]) != -1):
+            if (len(words[j]) > len(words[i]) and words[j].find(words[i]) != -1 and abs(i - j)< 3):
+                print('enter')
                 isUnique = False
                 break
             j = j + 1
@@ -122,8 +126,14 @@ def filterFieldWords(words):
             if deliword == None:
                 deliword = words[i]
         i = i + 1
+    print('ss')
     print(uniwords)
+    print('bb')
     return deliword
+
+
+
+
 
 def rank_word(word_cnt, text):
     words_score = []
@@ -148,11 +158,13 @@ def getDelimiter(datas):
     convert = Converter()
     messages = [convert.convert_raw_to_text(data) for data in datas]
     t_results = []
+    i = 0
     for message in messages:
         t_results.extend(get_ngram_words([message], (1, 2), 10))
+        i = i + 1
     words = analyzer.get_topk(t_results)[0:10]
     print(words)
-    deliWords = filterWords(words)
+    deliWords = filterFieldWords([w[0] for w in words])
     wordsList = [chr(int(word)) for word in deliWords.split(' ')]
     deliW = ''.join(wordsList)
     return deliW, deliWords
@@ -160,7 +172,8 @@ def getDelimiter(datas):
 if __name__ == '__main__':
     """
     datas = read_datas('/home/wxw/data/httpDatas/http_test', 'single')
-    print(len(datas))
+    print(len(datas)5
+1 6)
     datas = get_puredatas(datas)
     """
     httpDatatuning = HttpDataTuning()

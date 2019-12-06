@@ -28,5 +28,11 @@ def getFormatTree(request):
     postDatas = getPostJson(request)
     protocolType = postDatas['protocolType']
     msgF = MsgForMatG()
-    treeDatas = msgF.msgToTree(filePath='aaa')
+    treeDatas = None
+    if protocolType == 'binaryPro':
+        treeDatas = msgF.msgToTree(filePath='aaa')
+    elif protocolType == 'icsPro':
+        pass
+    else:
+        pass
     return HttpResponse(json.dumps(treeDatas), content_type='application/json')

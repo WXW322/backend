@@ -91,7 +91,7 @@ class TextClassifyLogic:
         rankWords = self.GetWodsRank(messages)
         funCode = None
         for word in rankWords:
-            if word not in preWords and word[1] / len(self.messages) > self.tRate:
+            if word not in preWords and word[1] / len(self.messages) > self.tRate and word[1] != len(self.messages):
                 funCode = word
                 break
         fResult = []

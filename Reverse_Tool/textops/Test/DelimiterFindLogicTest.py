@@ -32,6 +32,8 @@ def getFTPdelimiter():
 def getRidisData():
     redisDatas = RedisDataTuning()
     datas = redisDatas.sampleDatas()
+    print('aaa')
+    print(len(datas))
     freWords, deliword = getDelimiter(datas)
     print(freWords, deliword)
 

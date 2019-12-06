@@ -39,7 +39,7 @@ class MsgForMatG:
         if filePath != '':
             datas = self.dataTuning.readDatasTemp(filePath)
         if filePath != '':
-            borders = self.msgSplit.getOrderBordersNyPath(filePath, datas)
+            borders,_ = self.msgSplit.getOrderBordersNyPath(filePath, datas)
         primDatas = self.transRawDataToPrim(datas, borders)
         #可替换函数
         treeParas = {'h': 5, 'fcNum': 20, 'srate': 0.2}

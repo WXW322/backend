@@ -10,6 +10,7 @@ from Config.UserConfig import UserConfig
 from IcsProtocol.Config.GveConf import GveConf
 from common.DataTuning.RawDataTuning.DataTuning import DataTuning
 from BinaryProtocol.Logic.MsgSplitLogic import MegSplitLogic
+from  IcsProtocol.Logic.FormatGeneLogic import FormatGeneLogic
 # Create your views here.
 
 def getDatas(request):
@@ -40,11 +41,18 @@ def getProtoDataDetail(request):
         keys.append(data[0])
     sendDatas = json.loads(keys[0])
     rowIndex = sendDatas.get('rowIndex')
-    messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
-    messageDatas = get_puredatas(messageDatas)
-    msgData = messageDatas[rowIndex]
-    hexData = Converter().byteListToHex(msgData)
-    reHexData = {'res': hexData}
+    proType = sendDatas.get('protype')
+    reHexData = None
+    if proType == 'icsPro':
+        messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
+        messageDatas = get_puredatas(messageDatas)
+        msgData = messageDatas[rowIndex]
+        hexData = Converter().byteListToHex(msgData)
+        reHexData = {'res': hexData}
+    elif proType == 'textPro':
+        pass
+    else:
+        pass
     return HttpResponse(json.dumps(reHexData), content_type= 'application/json')
 
 def getPostJson(request):
@@ -72,10 +80,10 @@ def getProtoSplitSummary(request):
     pageOrder = postDatas.get('pageNum')
     pageCnt = postDatas.get('pageCnt')
     proType = postDatas.get('proType')
+    print(proType)
     startNum = int(pageOrder) * int(pageCnt)
     dataTuning = DataTuning()
     # future
-    messageDatas = dataTuning.readDatasTemp('')
     #messageDatas = dataTuning.readDatas('/home/wxw/data/ToolDatas/15895903730.10.222')
     #messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
     #messageDatas = get_puredatas(messageDatas)
@@ -84,12 +92,14 @@ def getProtoSplitSummary(request):
     messageSplitSums = None
     if proType == 'icsPro':
         gVoterLogic = GvoterLogic()
-        messageSplitSums = gVoterLogic.splitFileMessages('', None)
+        msgs = dataTuning.icsReadDatasTemp('')
+        messageSplitSums = gVoterLogic.splitFileMessages('', msgs)
     elif proType == 'textPro':
         pass
     else:
         binaryMsgSplit = MegSplitLogic()
-        messageSplitSums = binaryMsgSplit.getOrderBordersNyPath('',messageDatas)
+        messageDatas = dataTuning.readDatasTemp('')
+        _,messageSplitSums = binaryMsgSplit.getOrderBordersNyPath('',messageDatas)
 
     #messageSplitSums = gVoterLogic.splitMessages(uConfig, gVeParas, messageDatas)
     i = 0
@@ -113,6 +123,32 @@ def getSplitProtoDataDetail(request):
     splitDetailR = {}
     splitDetailR['res'] = messageSplitSums[rowIndex]
     return HttpResponse(json.dumps(splitDetailR), content_type='application/json')
+
+def getIcsFieldTypes(request):
+    postDatas = getPostJson(request)
+    pageOrder = postDatas.get('pageNum')
+    pageCnt = postDatas.get('pageCnt')
+    startNum = int(pageOrder) * int(pageCnt)
+    dataTuning = DataTuning()
+    msgs = dataTuning.icsReadDatasTemp('')
+    fLogic = FormatGeneLogic(msgs)
+    icsHeaders, spltMsgs = fLogic.getGF()
+    print('zzz')
+    fTypeResults = []
+    i = 0
+    while(i < pageCnt):
+        fTypeResults.append(spltMsgs[i+startNum])
+        i = i + 1
+    result = {}
+    result['header'] = convertResponseDatas(icsHeaders, 0)
+    newDatas = []
+    for ftyper in fTypeResults:
+        newDatas.append(convertResponseDatas(ftyper, 0))
+    result['datas'] = convertResponseDatas(newDatas, startNum)
+    return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+
 
 
 

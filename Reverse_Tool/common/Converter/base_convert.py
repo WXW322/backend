@@ -293,7 +293,7 @@ class Converter:
     def getDatasByLocs(self, messages, los):
         losMessages = []
         for message in messages:
-            if len(message) > los[-1]:
+            if len(message) >= los[-1]:
                 losMessages.append(message[los[0]:los[1]])
         return losMessages
 
@@ -304,6 +304,14 @@ class Converter:
             else:
                 finalResult.append(Datas)
                 break
+
+    def filterB(self, boundaries, bRange):
+        fBoundaries = []
+        for boundary in boundaries:
+            if boundary[0] < bRange:
+                fBoundaries.append(boundary)
+        return fBoundaries
+
 
 word_converter = Converter()
 

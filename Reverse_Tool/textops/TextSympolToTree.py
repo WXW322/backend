@@ -85,10 +85,10 @@ class TextSympolToTree:
         return tNodes
 
 
-    def colToLineTree(self, colNodes):
+    def colToLineTree(self, colNodes, h=5):
         tLen = len(colNodes)
-        #i = tLen - 2
-        i = 4
+        i = min(tLen - 2, 5)
+        #i = 4
         while(i >= 0):
             colNodes[i].children.append(colNodes[i+1])
             i = i - 1

@@ -2,7 +2,7 @@ from netzob.all import *
 import sys
 
 class ranker:
-    def rank_dic(self, dics, reverse = False):
+    def rank_dic(self, dics, reverse = True):
         try:
             dic_r = sorted(dics.items(), key = lambda x:x[1], reverse=reverse)
             return dic_r

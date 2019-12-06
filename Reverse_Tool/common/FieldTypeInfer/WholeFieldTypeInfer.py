@@ -17,10 +17,13 @@ class WholeFieldTypeInfer(BaseFieldTypeInfer):
 
 
     def inferConst(self, Los=None, datas=None):
+        #print(Los)
         if Los != None:
             datas = self.cverter.getDatasByLocs(self.messages, Los)
+        #print(datas)
         wordDic = Converter.convert_raw_to_count(datas)
         wordDic = sorted(wordDic.items(), key=lambda x: x[1])
+        #print(wordDic)
         if (wordDic[-1][1] / len(datas) > self.constThreshold):
             return 1
         else:
@@ -58,9 +61,9 @@ class WholeFieldTypeInfer(BaseFieldTypeInfer):
         if Los != None:
             datas = self.cverter.getDatasByLocs(self.messages, Los)
         lens = []
-        for data in datas:
-            if len(data) > Los[-1]:
-                lens.append(len(data) - Los[-1])
+        for msg in self.messages:
+            if len(msg) > Los[-1]:
+                lens.append(len(msg) - Los[-1])
             else:
                 lens.append(-1)
         datasLenBig = Converter.bytesToBigInt(datas)
@@ -134,6 +137,14 @@ class WholeFieldTypeInfer(BaseFieldTypeInfer):
         else:
             return 4
 
+    def get_Cloinfo(self, t_idom):
+        if self.inferConst(t_idom) == 1:
+            return 1
+        elif self.inferLenAccau(t_idom) == 1:
+            return 2
+        else:
+            return 4
+
     def extractWords(self, t_idoms, head):
         for t_idom in t_idoms:
             if t_idom[1] > head:
@@ -157,6 +168,35 @@ class WholeFieldTypeInfer(BaseFieldTypeInfer):
             if t_idom not in t_words:
                 t_words[t_idom] = 6
         return t_words
+
+
+    def extractCWords(self, t_idoms):
+        t_words = {}
+        for t_idom in t_idoms:
+            if t_idom[1] == -1:
+                t_words[t_idom] = 7
+                continue
+            t_info = self.get_Cloinfo(t_idom)
+            if t_info != 4:
+                t_words[t_idom] = t_info
+            else:
+                t_words[t_idom] = 6
+        #print(t_words)
+        return t_words
+
+    def cVertNumToName(self, num):
+        if num == 1:
+            return 'Const'
+        elif num == 2:
+            return 'Length'
+        elif num == 3:
+            return 'SerieId'
+        elif num == 0:
+            return 'Func'
+        elif num == 7:
+            return 'Payoad'
+        else:
+            return 'Other'
 
 
 

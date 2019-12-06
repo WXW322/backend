@@ -73,7 +73,7 @@ class MegSplitLogic:
         #    msgs = self.dataTuning.readDatas(filePath)
         borders = self.getOrderBorders(veParas, msgs)
         spltMsgs = self.msgSplit(borders, msgs)
-        return spltMsgs
+        return borders, spltMsgs
 
 
 

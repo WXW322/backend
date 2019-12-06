@@ -111,7 +111,7 @@ class TextFormInferTest:
         print('ss', kClus)
         #self.ladDbscanFormatInfer(3, 5, 3, 0.05, 10, '/home/wxw/paper/researchresult/text/formatInfer/DBSCAN/0.15 http.png')
         self.ldaFormatInferTest(3, 15, 2, kClus, '/home/wxw/paper/researchresult/text/formatInfer/KMEANS/'
-                                + str(kClus) + 'httpone.png', infercls='H')
+                                + str(kClus) + 'httptwo.png', infercls='H')
         print('ee', kClus)
 
     def httpTotalRepeatGenerate(self, kClus, rTime):
@@ -126,7 +126,7 @@ class TextFormInferTest:
         print('ss', r)
         self.ladDbscanFormatInfer(3, 5, 3, r, C,
                                   '/home/wxw/paper/researchresult/text/formatInfer/DBSCAN/'
-                                  + str(r) + str(C) + rTime +'http.png', infercls='H')
+                                  + str(r) + str(C) + rTime +'httptwo.png', infercls='H')
         #self.ldaFormatInferTest(3, 15, 2, kClus, '/home/wxw/paper/researchresult/text/formatInfer/KMEANS/'
                                 #+ str(kClus) + 'httpone.png', infercls='H')
         print('ee', r)
@@ -182,10 +182,12 @@ class TextFormInferTest:
 
 if __name__ == '__main__':
     textFTest = TextFormInferTest(['aaa'])
-    textFTest.redisDBSCANGenerate(0.01, 10, str(4))
+    #textFTest.httpTotalRepeatGenerate(10, 4)
+    #textFTest.redisDBSCANGenerate(0.01, 10, str(4))
     #textFTest.ftpDBSCANGenerate(0.05, 10, str(4))
     #textFTest.httpDBSTotalGenerate(0.01, 10, str(3))
-    #for i in [0.01, 0.05, 0.1, 0.2]:
+    for i in [0.01, 0.05, 0.1, 0.2]:
+        textFTest.httpDBSTotalGenerate(i, 10)
     #    textFTest.redisDBSCANGenerate(i, 10)
     #    textFTest.ftpDBSCANGenerate(i, 10)
     #    textFTest.httpDBSTotalGenerate(i, 10)
@@ -199,9 +201,10 @@ if __name__ == '__main__':
         #textFTest.httpTotalRepeatGenerate(10, i)
     #textFTest.httpTotalGenerate(20)
     #for i in [5, 10, 15, 20]:
+    #    textFTest.httpTotalGenerate(i)
     #    textFTest.redisTotalGenerate(i)
     #    textFTest.ftpTotalGenerate(i)
-        #textFTest.httpTotalGenerate(i)
+
     #textFTest.redisTotalGenerate()
     #textFTest.ftpTotalGenerate()
     #textFTest.httpTotalGenerate()

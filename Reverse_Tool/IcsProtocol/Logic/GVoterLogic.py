@@ -58,13 +58,12 @@ class GvoterLogic(splitter):
         cBoundaries = self.filterBoundaries(boundaries, cRange)
         vSpliter = vertical_splitter(messages)
         merGer = base_merger()
-
         return cBoundaries
 
-    def getSplitMessages(self, configParas, gveConfigParas, messages):
+    def getSplitMessages(self, configParas, gveConfigParas, messages, FType='G'):
         splitKey = '{}_{}'.format(configParas.getUserPathDynamic(), 'GSplit')
         gBoundaries = None
-        if self.redis_dealer.is_exist_key(splitKey):
+        if FType == 'G' and self.redis_dealer.is_exist_key(splitKey):
             gBoundaries = json.loads(self.redis_dealer.read_from_redis(splitKey))
         else:
             boundaries = self.getBoundaries(configParas, gveConfigParas, messages)
@@ -72,6 +71,7 @@ class GvoterLogic(splitter):
             jsongBoundaries = json.dumps(gBoundaries)
             self.redis_dealer.insert_to_redis(splitKey, jsongBoundaries)
         return gBoundaries
+
 
 
 

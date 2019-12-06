@@ -19,3 +19,8 @@ class DataTuning:
         datas.extend(srcDatas)
         datas.extend(desDatas)
         return datas
+
+    def icsReadDatasTemp(self, filePath):
+        messages = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
+        messages = get_puredatas(messages)
+        return messages
