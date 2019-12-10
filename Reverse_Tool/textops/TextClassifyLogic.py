@@ -91,11 +91,11 @@ class TextClassifyLogic:
         rankWords = self.GetWodsRank(messages)
         funCode = None
         for word in rankWords:
-            if word not in preWords and word[1] / len(self.messages) > self.tRate and word[1] != len(self.messages):
+            if word not in preWords and word[1] / len(self.messages) > self.tRate and word[1] != len(messages):
                 funCode = word
                 break
         fResult = []
-        print(funCode)
+        print(funCode, len(messages))
         #if funCode is not None and funCode[1] / len(messages) > self.trate:
         if funCode is not None:
             clsOne, clsTwo = self.ClassifyByCodes(funCode[0], messages)
@@ -165,6 +165,21 @@ class TextClassifyLogic:
         #print(ftpTuning.getMsgsLen(clsResult))
         #redisTuning = RedisDataTuning()
         #redisTuning.getMsgsLen(clsResult)
+        finalFormats = []
+        formatInfer = Format()
+        for dataList in result:
+            tMessages = []
+            for data in dataList:
+                singMessage = RawMessage(data.message)
+                tMessages.append(singMessage)
+            tempFormat = Symbol(messages=tMessages)
+            formatInfer.splitAligned(tempFormat, doInternalSlick=True)
+            finalFormats.append(tempFormat)
+        return finalFormats
+
+    def formatInfer(self, messages):
+        preFre = set()
+        result = self.classifyMessages(preFre, messages)
         finalFormats = []
         formatInfer = Format()
         for dataList in result:

@@ -9,7 +9,6 @@ class IcsSymbolToTree:
 
     def icsSymToTree(self, gFormat, cFormats, h=10):
         gNodeFirst, gNodeLast = self.transLineToNodes(gFormat[0:len(gFormat)-1])
-
         for cFormat in cFormats:
             tFuncNode = node()
             tType = 'F' + ',' + str(len(cFormat)) + ',' + str(cFormat)

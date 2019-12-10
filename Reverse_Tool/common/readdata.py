@@ -31,7 +31,9 @@ def read_datas(dirs,ways = "single"):
     return t_datas
 
 def read_filedatas(filePath):
+    print(filePath)
     datas = PCAPImporter.readFile(filePath).values()
+    return datas
 
  
 def getSummary(data, lo):

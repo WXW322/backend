@@ -22,5 +22,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', view.hello),
     url(r'common/', include('common.urls')),
-    url(r'formattree/', view.getFormatTree)
+    url(r'formattree/', view.getFormatTree),
+    url(r'fileUpload/', view.fileUpload),
+    url(r'queryFileNum/', view.getFileNum),
+    url(r'queryFileSize', view.getFileSize),
+    url(r'queryFileLists', view.getFileLists)
 ]

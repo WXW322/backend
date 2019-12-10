@@ -61,18 +61,18 @@ class MegSplitLogic:
         paraFre['r'] = gveConfigParas['r']
         return self.desiner.VoteMultyByDicParas(paraFre, freDicts)
 
-    def msgSplit(self, borders, msgs):
-        return self.msgSpliter.splitMessages(borders, msgs)
+    def msgSplit(self, borders, msgs, maxRange=15):
+        return self.msgSpliter.splitMessages(borders, msgs, maxRange)
 
 
-    def getOrderBordersNyPath(self, filePath='', msgs=None):
+    def getOrderBordersNyPath(self, filePath='', msgs=None, maxRange=15):
         # future update
         veParas = {'diffMeasure': 'abs', 'vWayFre': 'loose', 'T': 0, 'r': 0.3}
         # future update
         #if filePath != '':
         #    msgs = self.dataTuning.readDatas(filePath)
         borders = self.getOrderBorders(veParas, msgs)
-        spltMsgs = self.msgSplit(borders, msgs)
+        spltMsgs = self.msgSplit(borders, msgs, maxRange)
         return borders, spltMsgs
 
 

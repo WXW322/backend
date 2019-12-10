@@ -3,13 +3,14 @@ from Data_base.Data_redis.redis_deal import redis_convert
 from common.readdata import *
 from common.Converter.base_convert import word_converter
 from Config.ve_strategy import ve_strategy
-
+import sys
 class frequence_voter(Base_voter):
     def __init__(self, fre_woc):
         super().__init__(fre_woc)
         self.voc['300'] = 0
 
     def vote_for_item(self, item, start = 0):
+        #sys.exit()
         min_fre = 100
         length = len(item)
         i = 1

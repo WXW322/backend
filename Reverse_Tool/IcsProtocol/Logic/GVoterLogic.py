@@ -63,7 +63,7 @@ class GvoterLogic(splitter):
     def getSplitMessages(self, configParas, gveConfigParas, messages, FType='G'):
         splitKey = '{}_{}'.format(configParas.getUserPathDynamic(), 'GSplit')
         gBoundaries = None
-        if FType == 'G' and self.redis_dealer.is_exist_key(splitKey):
+        if FType == 'Y' and self.redis_dealer.is_exist_key(splitKey):
             gBoundaries = json.loads(self.redis_dealer.read_from_redis(splitKey))
         else:
             boundaries = self.getBoundaries(configParas, gveConfigParas, messages)
@@ -75,14 +75,14 @@ class GvoterLogic(splitter):
 
 
 
-    def splitMessages(self, configParas, gveConfigParas, messages):
+    def splitMessages(self, configParas, gveConfigParas, messages, maxRange=15):
         gBoundaries = self.getSplitMessages(configParas, gveConfigParas, messages)
-        return self.msgSpliter.splitMessages([gBoundaries for i in range(len(messages))], messages)
+        return self.msgSpliter.splitMessages([gBoundaries for i in range(len(messages))], messages, maxRange)
 
-    def splitFileMessages(self, filePath, messages):
+    def splitFileMessages(self, filePath, messages, maxRange=15):
         gVeParas = GveConf.geneGveParas()
         uConfig = UserConfig('/home/wxw/data/ToolDatas/15895903730.10.222', '15895903730')
-        messageSplitSums = self.splitMessages(uConfig, gVeParas, messages)
+        messageSplitSums = self.splitMessages(uConfig, gVeParas, messages, maxRange)
         return messageSplitSums
 
 

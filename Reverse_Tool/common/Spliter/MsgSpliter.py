@@ -56,6 +56,18 @@ class MsgSpliter:
             splitMsgs.append(self.splitMessageByType(boundaries[i], messages[i]))
         return splitMsgs
 
+    def splitTextMsgs(self, msgs, delimiter, maxRange=150):
+        spltMsgs = []
+        print(msgs[0])
+        for msg in msgs:
+            textMsg = ''
+            for itom in msg:
+                textMsg = textMsg + str(itom) + ' | | | ' + str(delimiter) + ' | | | '
+            spltMsgs.append(textMsg[0:maxRange])
+        print(spltMsgs[0])
+        return spltMsgs
+
+
 if __name__ == '__main__':
     messages = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
     messages = get_puredatas(messages)

@@ -37,7 +37,8 @@ class MsgForMatG:
         borders= None
         datas = None
         if filePath != '':
-            datas = self.dataTuning.readDatasTemp(filePath)
+            #datas = self.dataTuning.readDatasTemp(filePath)
+            datas = self.dataTuning.readDatasByType('binaryPro')
         if filePath != '':
             borders,_ = self.msgSplit.getOrderBordersNyPath(filePath, datas)
         primDatas = self.transRawDataToPrim(datas, borders)

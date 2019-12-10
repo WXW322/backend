@@ -100,8 +100,9 @@ class FormatGeneLogic:
 
     def GTJsonTree(self, configParas, gVeparas):
         gFormat, cFormats = self.GTreeGenerate(configParas, gVeparas)
+        print(gFormat)
         groot = self.icsSymTree.icsSymToTree(gFormat, cFormats)
-        print(groot.transToIcsDictTree())
+        return groot.transToIcsDictTree()
 
 
     def changeFormat(self, boundaries, wordsType):

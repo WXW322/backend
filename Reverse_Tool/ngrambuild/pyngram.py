@@ -242,36 +242,37 @@ class voters:
         return orderWords
 
 
-    def getQueryWords(self, key):
+    def getQueryWords(self, key, msgs=None, wType='G'):
         key = key + '_' + 'RawWords'
         keyWords = {}
-        if self.redisDeal.is_exist_key(key):
+        if self.redisDeal.is_exist_key(key) and wType == 'B':
             keyWords = self.redisDeal.read_from_redis(key)
         else:
-            messages = read_datas(UserConfig.path, 'single')
-            messages = get_puredatas(messages)
+            messages = msgs
+            #messages = read_datas(UserConfig.path, 'single')
+            #messages = get_puredatas(messages)
             keyWords = self.get_keywords(messages, VeConfig.veParameters['height']+1)
             self.redisDeal.insert_to_redis(key, keyWords)
         return keyWords
 
-    def getQueryFrequentWords(self, key):
+    def getQueryFrequentWords(self, key, msgs = None, wType='M'):
         freWords = {}
         freKey = key + '_' + 'FreWords'
-        if self.redisDeal.is_exist_key(freKey):
+        if self.redisDeal.is_exist_key(freKey) and wType == 'G':
             freWords = self.redisDeal.read_from_redis(freKey)
         else:
-            rawWords = self.getQueryWords(key)
+            rawWords = self.getQueryWords(key, msgs)
             freWords = self.get_frequent(rawWords, VeConfig.veParameters['height'] + 1)
             self.redisDeal.insert_to_redis(freKey, freWords)
         return freWords
 
-    def getQueryEntryWords(self, key):
+    def getQueryEntryWords(self, key, msgs, wType='M'):
         entryWords = {}
         entryKey = key + '_' + 'EntryWords'
-        if self.redisDeal.is_exist_key(entryKey):
+        if self.redisDeal.is_exist_key(entryKey) and wType=='G':
             entryWords = self.redisDeal.read_from_redis(entryKey)
         else:
-            rawWords = self.getQueryWords(key)
+            rawWords = self.getQueryWords(key, msgs)
             entryWords = self.get_backentry(rawWords, VeConfig.veParameters['height'] + 1)
             self.redisDeal.insert_to_redis(entryKey, entryWords)
         return entryWords

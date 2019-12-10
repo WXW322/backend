@@ -26,6 +26,19 @@ class MessageConvert(Converter):
         return srcs, dess
 
     @staticmethod
+    def clsMessageIdByDire(messages):
+        src = MessageConvert.get_ip(messages[0][1].source)
+        des = MessageConvert.get_ip(messages[0][1].destination)
+        srcs = []
+        dess = []
+        for message in messages:
+            if (MessageConvert.get_ip(message[1].source) == src):
+                srcs.append(message)
+            else:
+                dess.append(message)
+        return srcs, dess
+
+    @staticmethod
     def getMinLength(datas):
         lens = [len(data) for data in datas]
         return min(lens)

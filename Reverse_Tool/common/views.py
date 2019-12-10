@@ -4,13 +4,14 @@ from django.http.response import HttpResponse
 from .GlobalModels.PrimModel import PrimeModel
 from .readdata import *
 from .Converter.base_convert import Converter
-from common.Spliter.MsgSpliter import MsgSpliter
 from IcsProtocol.Logic.GVoterLogic import GvoterLogic
 from Config.UserConfig import UserConfig
 from IcsProtocol.Config.GveConf import GveConf
 from common.DataTuning.RawDataTuning.DataTuning import DataTuning
 from BinaryProtocol.Logic.MsgSplitLogic import MegSplitLogic
-from  IcsProtocol.Logic.FormatGeneLogic import FormatGeneLogic
+from IcsProtocol.Logic.FormatGeneLogic import FormatGeneLogic
+from textops.TextViewLogic import TextViewLogic
+from IcsProtocol.Logic.IcsReverLogic import IcsReverLogic
 # Create your views here.
 
 def getDatas(request):
@@ -21,8 +22,11 @@ def getDatas(request):
     sendDatas = json.loads(keys[0])
     pageOrder = sendDatas.get('pageNum')
     pageCnt = sendDatas.get('pageCnt')
+    proType = sendDatas.get('proType')
+    dataTuning = DataTuning()
     startNum = int(pageOrder) * int(pageCnt)
-    messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
+    #messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
+    messageDatas = dataTuning.readSummaryByType(proType)
     PrimeModel.messages = messageDatas
     messageSummaries = []
     if startNum < len(PrimeModel.messages):
@@ -41,18 +45,25 @@ def getProtoDataDetail(request):
         keys.append(data[0])
     sendDatas = json.loads(keys[0])
     rowIndex = sendDatas.get('rowIndex')
-    proType = sendDatas.get('protype')
+    proType = sendDatas.get('proType')
+    dataTuning = DataTuning()
     reHexData = None
+    print(proType)
     if proType == 'icsPro':
-        messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
-        messageDatas = get_puredatas(messageDatas)
+        messageDatas = dataTuning.readDatasByType(proType)
         msgData = messageDatas[rowIndex]
         hexData = Converter().byteListToHex(msgData)
         reHexData = {'res': hexData}
     elif proType == 'textPro':
-        pass
+        messageDatas = dataTuning.readDatasByType(proType)
+        msgData = messageDatas[rowIndex]
+        hexData = str(msgData)
+        reHexData = {'res': hexData}
     else:
-        pass
+        messageDatas = dataTuning.readDatasByType(proType)
+        msgData = messageDatas[rowIndex]
+        hexData = Converter().byteListToHex(msgData)
+        reHexData = {'res': hexData}
     return HttpResponse(json.dumps(reHexData), content_type= 'application/json')
 
 def getPostJson(request):
@@ -92,13 +103,15 @@ def getProtoSplitSummary(request):
     messageSplitSums = None
     if proType == 'icsPro':
         gVoterLogic = GvoterLogic()
-        msgs = dataTuning.icsReadDatasTemp('')
+        msgs = dataTuning.readDatasByType(proType)
         messageSplitSums = gVoterLogic.splitFileMessages('', msgs)
     elif proType == 'textPro':
-        pass
+        msgs = dataTuning.readDatasByType(proType)
+        textViewLogic = TextViewLogic()
+        messageSplitSums = textViewLogic.spltMsgs(msgs)
     else:
         binaryMsgSplit = MegSplitLogic()
-        messageDatas = dataTuning.readDatasTemp('')
+        messageDatas = dataTuning.readDatasByType(proType)
         _,messageSplitSums = binaryMsgSplit.getOrderBordersNyPath('',messageDatas)
 
     #messageSplitSums = gVoterLogic.splitMessages(uConfig, gVeParas, messageDatas)
@@ -113,13 +126,22 @@ def getProtoSplitSummary(request):
 def getSplitProtoDataDetail(request):
     postDatas = getPostJson(request)
     rowIndex = postDatas.get('rowIndex')
-    gVeParas = GveConf.geneGveParas()
-    uConfig = UserConfig('/home/wxw/data/ToolDatas/15895903730.10.222', '15895903730')
-    gVoterLogic = GvoterLogic()
-    messageDatas = read_datas('/home/wxw/data/ToolDatas/15895903730.10.222', 'single')
-    messageDatas = get_puredatas(messageDatas)
+    proType = postDatas.get('proType')
     messageSplitSums = None
-    messageSplitSums = gVoterLogic.splitMessages(uConfig, gVeParas, messageDatas)
+    dataTuning = DataTuning()
+    print(proType)
+    if proType == 'icsPro':
+        msgs = dataTuning.readDatasByType(proType)
+        icsRvLogic = IcsReverLogic()
+        messageSplitSums = icsRvLogic.getSplitMsgs(msgs, maxRange=2000)
+    elif proType == 'textPro':
+        msgs = dataTuning.readDatasByType(proType)
+        textViewLogic = TextViewLogic()
+        messageSplitSums = textViewLogic.spltMsgs(msgs, maxRange=2000)
+    else:
+        binaryMsgSplit = MegSplitLogic()
+        messageDatas = dataTuning.readDatasByType(proType)
+        _, messageSplitSums = binaryMsgSplit.getOrderBordersNyPath('', messageDatas, maxRange=2000)
     splitDetailR = {}
     splitDetailR['res'] = messageSplitSums[rowIndex]
     return HttpResponse(json.dumps(splitDetailR), content_type='application/json')

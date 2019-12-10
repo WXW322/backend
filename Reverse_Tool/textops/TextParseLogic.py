@@ -3,10 +3,12 @@ import sys
 from netzob.all import *
 from common.readdata import *
 from textops.Model.TextModel import TextModel
+from common.Spliter.MsgSpliter import MsgSpliter
 
 class TextParseLogic:
     def __init__(self):
         self.name = 'parser'
+        self.msgSpliter = MsgSpliter()
 
     def split(self, messages, delimiter):
         t_messages = []
@@ -24,10 +26,32 @@ class TextParseLogic:
             i = i + 1
         return textDatas
 
+    def spltMsgs(self, messages, delimiter):
+        spltmsgs = []
+        for message in messages:
+            spltmsgs.append([str(itom) for itom in message.split(delimiter)])
+        headers = []
+        for i in range(6):
+            if i % 2 != 0:
+                headers.append('field' + str(i))
+            else:
+                headers.append(str(delimiter))
+        return headers, spltmsgs
+
+    def spltMsgsSimple(self, messages, delimiter, maxRange=150):
+        spltmsgs = []
+        for message in messages:
+            spltmsgs.append(message.split(delimiter))
+        return self.msgSpliter.splitTextMsgs(spltmsgs, delimiter, maxRange)
+
+
 
 if __name__ == '__main__':
     message_parser = TextParseLogic()
     messages = read_datas('/home/wxw/data/httpDatas/http_small', 'single')
     messages = get_puredatas(messages)
-    datas = message_parser.ConvertDataToMessage(messages, b'\r\n')
-    print(datas[0].now(3))
+    h, D = message_parser.spltMsgs(messages, b'\r\n')
+    print(h)
+    print(D)
+    #datas = message_parser.ConvertDataToMessage(messages, b'\r\n')
+    #print(datas[0].now(3))

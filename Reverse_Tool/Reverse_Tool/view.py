@@ -2,6 +2,11 @@
 from django.http import HttpResponse
 import json
 from BinaryProtocol.Logic.MsgForMatG import MsgForMatG
+from IcsProtocol.Logic.IcsReverLogic import IcsReverLogic
+from common.FileManager.FileRead import FileRead
+from textops.TextViewLogic import TextViewLogic
+from Data_base.Data_mysql.MysqlDeal import MysqlDeal
+from DashBoard.FileWriteLogic import FileWriteLogic
 
 
 def hello(request):
@@ -32,7 +37,44 @@ def getFormatTree(request):
     if protocolType == 'binaryPro':
         treeDatas = msgF.msgToTree(filePath='aaa')
     elif protocolType == 'icsPro':
-        pass
+        icsRever = IcsReverLogic()
+        treeDatas = icsRever.getIcsTree()
     else:
-        pass
+        textViewLogic = TextViewLogic()
+        treeDatas = textViewLogic.formatInfer()
     return HttpResponse(json.dumps(treeDatas), content_type='application/json')
+
+def fileUpload(request):
+    filename = request.POST.get('fileName')
+    file = request.FILES.get(filename)
+    fileType = request.POST.get('fileType')
+    #print(fileType, filename)
+    fRead = FileRead()
+    res = fRead.writeFile(file, filename, fileType)
+    fileWLogic = FileWriteLogic()
+    fileWLogic.writeMySql(filename)
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+
+
+def getFileNum(request):
+    msqData = MysqlDeal()
+    res = {'fileName': msqData.selectCnt()}
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+def getFileSize(request):
+    fileWriteLogic = FileWriteLogic()
+    res = {'fileSize': fileWriteLogic.readMySqlSize()}
+    return HttpResponse(json.dumps(res), content_type='application/json')
+
+def getFileLists(request):
+    msqData = MysqlDeal()
+    rDatas = msqData.select()
+    resList = []
+    for rData in rDatas:
+        tData = {}
+        tData['title'] = rData[1]
+        resList.append(tData)
+    res = {}
+    res['fileLists'] = resList
+    return HttpResponse(json.dumps(res), content_type='application/json')
